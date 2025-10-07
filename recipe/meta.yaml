@@ -1,18 +1,18 @@
 {% set name = "pyts" %}
-{% set version = "0.12.0" %}
+{% set version = "0.13.0" %}
 
 package:
   name: {{ name|lower }}
   version: {{ version }}
 
 source:
-  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: af85e09a14334cbe384318de6ca4379e9a30bf5bbd1aaf3a1c4a94872e9765b1
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: aca0ecc315f4cc782be363f3b62384a24a02d23a5a7d549b839b2c40a7fbed02
 
 build:
   number: 0
   #skip s390x as lack of numba
-  skip: True # [py<37 or s390x]
+  skip: true  # [py<37 or s390x]
   script: {{ PYTHON }} -m pip install --no-deps --no-build-isolation . -vv
 
 requirements:
@@ -23,11 +23,11 @@ requirements:
     - setuptools
   run:
     - python
-    - numpy >=1.17.5
-    - scipy >=1.3.0
-    - scikit-learn >=0.22.1
-    - joblib >=0.12
-    - numba >=0.48.0
+    - numpy >=1.22.4
+    - scipy >=1.8.1
+    - scikit-learn >=1.2.0
+    - joblib >=1.1.1
+    - numba >=0.55.2
 
 test:
   imports:
@@ -44,7 +44,6 @@ about:
   license_family: BSD
   license_file: LICENSE.txt
   summary: A Python package for time series classification
-
   description: |
     pyts is a Python package for time series transformation and classification.
     It aims to make time series classification easily accessible by providing
