@@ -11,8 +11,7 @@ source:
 
 build:
   number: 0
-  #skip s390x as lack of numba
-  skip: true  # [py<37 or s390x]
+  skip: true  # [py<37]
   script: {{ PYTHON }} -m pip install --no-deps --no-build-isolation . -vv
 
 requirements:
@@ -24,7 +23,10 @@ requirements:
   run:
     - python
     - numpy >=1.22.4
-    - scipy >=1.8.1
+    # Add upper bound due to issue:
+    # E       AttributeError: 'csr_matrix' object has no attribute 'A'
+    # https://docs.scipy.org/doc/scipy-1.13.0/reference/generated/scipy.sparse.csr_matrix.A.html
+    - scipy >=1.8.1,<1.14.0
     - scikit-learn >=1.2.0
     - joblib >=1.1.1
     - numba >=0.55.2
@@ -32,11 +34,43 @@ requirements:
 test:
   imports:
     - pyts
-    - pyts.tests
+    - pyts.approximation
+    - pyts.approximation.mcb
+    - pyts.approximation.paa
+    - pyts.bag_of_words
+    - pyts.classification
+    - pyts.classification.learning_shapelets
+    - pyts.classification.time_series_forest
+    - pyts.classification.tsbf
+    - pyts.datasets
+    - pyts.datasets.ucr
+    - pyts.datasets.uea
+    - pyts.decomposition
+    - pyts.decomposition.ssa
+    - pyts.image
+    - pyts.image.gaf
+    - pyts.image.mtf
+    - pyts.image.recurrence
+    - pyts.metrics
+    - pyts.metrics.dtw
+    - pyts.metrics.lower_bounds
+    - pyts.multivariate.classification
+    - pyts.multivariate.image
+    - pyts.multivariate.transformation
+    - pyts.multivariate.utils
+    - pyts.preprocessing
+    - pyts.preprocessing.discretizer
+    - pyts.transformation
+    - pyts.transformation.rocket
+    - pyts.transformation.shapelet_transform
+    - pyts.utils
+    - pyts.utils.deprecation
   requires:
     - pip
+    - pytest
   commands:
     - pip check
+    - pytest --pyargs pyts.tests
 
 about:
   home: https://github.com/johannfaouzi/pyts
@@ -50,7 +84,7 @@ about:
     preprocessing and utility tools, and implementations of state-of-the-art
     algorithms. Most of these algorithms transform time series, thus pyts
     provides several tools to perform these transformations.
-  doc_url: https://pyts.readthedocs.io/en/latest/index.html
+  doc_url: https://pyts.readthedocs.io
   dev_url: https://github.com/johannfaouzi/pyts
 
 extra:
