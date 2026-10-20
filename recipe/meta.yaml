@@ -1,80 +1,58 @@
 {% set name = "pyts" %}
-{% set version = "0.13.0" %}
+{% set version = "0.14.0" %}
 
 package:
-  name: {{ name|lower }}
+  name: {{ name }}
   version: {{ version }}
 
 source:
   url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: aca0ecc315f4cc782be363f3b62384a24a02d23a5a7d549b839b2c40a7fbed02
+  sha256: c0c64ea62bc7e336a9ce1d61fc34182593b3c164662550c600f179d591798343
 
 build:
   number: 0
+  # pyproject.toml: requires-python >=3.11,<3.16
+  skip: true  # [py<311]
   script: {{ PYTHON }} -m pip install --no-deps --no-build-isolation . -vv
 
 requirements:
   host:
     - python
     - pip
-    - wheel
-    - setuptools
+    - setuptools >=77
   run:
     - python
-    - numpy >=1.22.4
-    - scipy >=1.8.1
-    - scikit-learn >=1.2.0
-    - joblib >=1.1.1
-    - numba >=0.55.2
+    - numpy >=1.24.0
+    - scipy >=1.15.0
+    - scikit-learn >=1.6.0
+    - joblib >=1.3.0
+    - numba >=0.60.0
+    - platformdirs >=4.0.0
 
 test:
   imports:
     - pyts
     - pyts.approximation
-    - pyts.approximation.mcb
-    - pyts.approximation.paa
     - pyts.bag_of_words
     - pyts.classification
-    - pyts.classification.learning_shapelets
-    - pyts.classification.time_series_forest
-    - pyts.classification.tsbf
     - pyts.datasets
-    - pyts.datasets.ucr
-    - pyts.datasets.uea
     - pyts.decomposition
-    - pyts.decomposition.ssa
     - pyts.image
-    - pyts.image.gaf
-    - pyts.image.mtf
-    - pyts.image.recurrence
     - pyts.metrics
-    - pyts.metrics.dtw
-    - pyts.metrics.lower_bounds
+    - pyts.multivariate
     - pyts.multivariate.classification
     - pyts.multivariate.image
     - pyts.multivariate.transformation
     - pyts.multivariate.utils
     - pyts.preprocessing
-    - pyts.preprocessing.discretizer
     - pyts.transformation
-    - pyts.transformation.rocket
-    - pyts.transformation.shapelet_transform
     - pyts.utils
-    - pyts.utils.deprecation
   commands:
     - pip check
-    - pytest --pyargs pyts.tests  # [py<313]
+    - pytest -vv --pyargs pyts
   requires:
     - pip
     - pytest
-    # Upper bound due to usage of removed attribute:
-    # E       AttributeError: module 'numpy' has no attribute 'product'
-    # https://github.com/numpy/numpy/pull/23314/files#diff-3394e340a2a865304b1b995759031c1fc620aaeaf03318f5e1a0230c3dae0d93R3836-R3838
-    - numpy <2  # [py<313]
-    # Upper bound due to usage of removed attribute:
-    # E       AttributeError: 'csr_matrix' object has no attribute 'A'
-    # https://docs.scipy.org/doc/scipy-1.13.0/reference/generated/scipy.sparse.csr_matrix.A.html
-    - scipy <1.14.0  # [py<313]
 
 about:
   home: https://github.com/johannfaouzi/pyts
